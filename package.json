@@ -1,0 +1,102 @@
+{
+  "name": "copy-file-reference",
+  "displayName": "Copy File Reference",
+  "description": "Copy file path with line number in various formats (@folder/path#line, path#line, path#startLine-endLine)",
+  "version": "0.1.0",
+  "publisher": "zhouyuyang",
+  "license": "MIT",
+  "icon": "icon.png",
+  "galleryBanner": {
+    "color": "#1e1e1e",
+    "theme": "dark"
+  },
+  "engines": {
+    "vscode": "^1.80.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "keywords": [
+    "copy",
+    "file path",
+    "line number",
+    "reference",
+    "clipboard"
+  ],
+  "activationEvents": [],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "copyFileReference.withFolder",
+        "title": "Copy Reference: @folder/path#line"
+      },
+      {
+        "command": "copyFileReference.pathOnly",
+        "title": "Copy Reference: path#line"
+      },
+      {
+        "command": "copyFileReference.withRange",
+        "title": "Copy Reference: @folder/path#startLine-endLine"
+      }
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "submenu": "copyFileReference.submenu",
+          "group": "9_cutcopypaste@99"
+        }
+      ],
+      "copyFileReference.submenu": [
+        {
+          "command": "copyFileReference.withFolder",
+          "group": "1_copy"
+        },
+        {
+          "command": "copyFileReference.pathOnly",
+          "group": "1_copy"
+        },
+        {
+          "command": "copyFileReference.withRange",
+          "group": "1_copy"
+        }
+      ]
+    },
+    "submenus": [
+      {
+        "id": "copyFileReference.submenu",
+        "label": "Copy File Reference"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "copyFileReference.withFolder",
+        "key": "ctrl+alt+shift+c",
+        "mac": "cmd+alt+shift+c",
+        "when": "editorTextFocus"
+      },
+      {
+        "command": "copyFileReference.pathOnly",
+        "key": "ctrl+alt+c",
+        "mac": "cmd+alt+c",
+        "when": "editorTextFocus"
+      },
+      {
+        "command": "copyFileReference.withRange",
+        "key": "ctrl+alt+shift+r",
+        "mac": "cmd+alt+shift+r",
+        "when": "editorTextFocus"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.80.0",
+    "@types/node": "^18.0.0",
+    "typescript": "^5.3.0"
+  }
+}
