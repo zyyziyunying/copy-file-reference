@@ -23,13 +23,13 @@ Package the extension with `vsce package`. A `.vscodeignore` excludes `src/`, `n
 Single-file extension: all logic lives in `src/extension.ts`.
 
 - **`activate()`** — Registers three commands (`copyFileReference.withFolder`, `copyFileReference.pathOnly`, `copyFileReference.withRange`) that each call `buildReference()` with a different mode, then copy the result to clipboard.
-- **`buildReference()`** — Resolves the active editor's file URI to a workspace-relative path, gets line/range info from the selection, and formats the reference string based on mode.
+- **`buildReference()`** — Resolves the active editor's file URI to a workspace-relative path, gets line/range info from the selection, and formats the reference string based on mode. For non-workspace files, falls back to using the file name only (e.g. `filename.ts#line`).
 - **Helper functions**: `getWorkspaceFolder`, `getRelativePath`, `getFolderName`, `getLineInfo`, `copyToClipboard`.
 
 Commands, keybindings, and context menus are declared in `package.json` under `contributes`. The extension uses a submenu (`copyFileReference.submenu`) in the editor right-click context menu.
 
 ## Notes
 
-- Warning messages are in Chinese (e.g. "当前文件不在工作区内，无法生成引用路径").
 - The `withFolder` and `withRange` modes currently produce identical output — both format as `@folder/path#line` with automatic range detection.
+- Non-workspace files are supported — falls back to `filename.ts#line` format.
 - Target: VS Code ^1.80.0, TypeScript ES2020, CommonJS modules.

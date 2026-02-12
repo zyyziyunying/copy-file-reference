@@ -6,11 +6,11 @@ Quickly copy file path with line number to clipboard in various formats. Perfect
 
 Three copy formats available via keyboard shortcuts, command palette, or right-click context menu:
 
-| Format | Example | Shortcut |
-|--------|---------|----------|
-| `@folder/path#line` | `@my-project/src/index.ts#42` | `Ctrl+Alt+Shift+C` |
-| `path#line` | `src/index.ts#42` | `Ctrl+Alt+C` |
-| `@folder/path#start-end` | `@my-project/src/index.ts#10-20` | `Ctrl+Alt+Shift+R` |
+| Format                   | Example                          | Shortcut     |
+| ------------------------ | -------------------------------- | ------------ |
+| `@folder/path#line`      | `@my-project/src/index.ts#42`    | `Alt+K`      |
+| `path#line`              | `src/index.ts#42`                | `Ctrl+Alt+C` |
+| `@folder/path#start-end` | `@my-project/src/index.ts#10-20` | `Alt+R`      |
 
 > On macOS, use `Cmd` instead of `Ctrl`.
 
@@ -38,12 +38,14 @@ When multiple lines are selected, all formats automatically show the line range 
 ## Examples
 
 Single line:
+
 ```
 @my-app/src/utils/helper.ts#66
 src/utils/helper.ts#66
 ```
 
 Multiple lines selected:
+
 ```
 @my-app/src/utils/helper.ts#60-66
 src/utils/helper.ts#60-66
@@ -51,7 +53,8 @@ src/utils/helper.ts#60-66
 
 ## Requirements
 
-- The file must be inside a VS Code workspace folder.
+- Works best inside a VS Code workspace folder.
+- For files outside a workspace, falls back to `filename.ts#line` format.
 
 ## License
 

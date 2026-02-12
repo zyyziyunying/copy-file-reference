@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.1
+
+- Support non-workspace files: falls back to `filename.ts#line` format instead of showing a warning
+
 ## 0.1.0
 
 - Initial release

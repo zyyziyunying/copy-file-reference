@@ -49,35 +49,25 @@ function buildReference(
 ): string | undefined {
   const fileUri = editor.document.uri;
   const workspaceFolder = getWorkspaceFolder(fileUri);
+  const lineInfo = getLineInfo(editor);
+  const line = lineInfo.isRange
+    ? `${lineInfo.start}-${lineInfo.end}`
+    : `${lineInfo.start}`;
 
   if (!workspaceFolder) {
-    vscode.window.showWarningMessage("当前文件不在工作区内，无法生成引用路径");
-    return undefined;
+    const fileName = path.basename(fileUri.fsPath);
+    return `${fileName}#${line}`;
   }
 
   const relativePath = getRelativePath(fileUri, workspaceFolder);
   const folderName = getFolderName(workspaceFolder);
-  const lineInfo = getLineInfo(editor);
 
   switch (mode) {
-    case "withFolder": {
-      const line = lineInfo.isRange
-        ? `${lineInfo.start}-${lineInfo.end}`
-        : `${lineInfo.start}`;
+    case "withFolder":
+    case "withRange":
       return `@${folderName}/${relativePath}#${line}`;
-    }
-    case "pathOnly": {
-      const line = lineInfo.isRange
-        ? `${lineInfo.start}-${lineInfo.end}`
-        : `${lineInfo.start}`;
+    case "pathOnly":
       return `${relativePath}#${line}`;
-    }
-    case "withRange": {
-      const line = lineInfo.isRange
-        ? `${lineInfo.start}-${lineInfo.end}`
-        : `${lineInfo.start}`;
-      return `@${folderName}/${relativePath}#${line}`;
-    }
   }
 }
 
