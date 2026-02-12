@@ -55,6 +55,10 @@ function buildReference(
     : `${lineInfo.start}`;
 
   if (!workspaceFolder) {
+    if (mode === "withRange") {
+      const fullPath = fileUri.fsPath.replace(/\\/g, "/");
+      return `${fullPath}#${line}`;
+    }
     const fileName = path.basename(fileUri.fsPath);
     return `${fileName}#${line}`;
   }
