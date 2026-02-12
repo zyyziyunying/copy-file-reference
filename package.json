@@ -2,7 +2,7 @@
   "name": "copy-file-reference",
   "displayName": "Copy File Reference",
   "description": "Copy file path with line number in various formats (@folder/path#line, path#line, path#startLine-endLine)",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "publisher": "zhouyuyang",
   "license": "MIT",
   "icon": "icon.png",
