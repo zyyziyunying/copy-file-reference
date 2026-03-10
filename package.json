@@ -1,10 +1,14 @@
 {
   "name": "copy-file-reference",
   "displayName": "Copy File Reference",
-  "description": "Copy file path with line number in various formats (@folder/path#line, path#line, path#startLine-endLine)",
-  "version": "0.1.1",
+  "description": "Copy an @-prefixed absolute file path with line number or range",
+  "version": "0.1.4",
   "publisher": "zhouyuyang",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zyyziyunying/copy-file-reference.git"
+  },
   "icon": "icon.png",
   "galleryBanner": {
     "color": "#1e1e1e",
@@ -23,66 +27,32 @@
     "reference",
     "clipboard"
   ],
-  "activationEvents": [],
+  "activationEvents": [
+    "onCommand:copyFileReference.copy",
+    "onCommand:copyFileReference.withRange",
+    "onCommand:copyFileReference.withFolder",
+    "onCommand:copyFileReference.pathOnly"
+  ],
   "main": "./out/extension.js",
   "contributes": {
     "commands": [
       {
-        "command": "copyFileReference.withFolder",
-        "title": "Copy Reference: @folder/path#line"
-      },
-      {
-        "command": "copyFileReference.pathOnly",
-        "title": "Copy Reference: path#line"
-      },
-      {
-        "command": "copyFileReference.withRange",
-        "title": "Copy Reference: @folder/path#startLine-endLine"
+        "command": "copyFileReference.copy",
+        "title": "Copy File Reference"
       }
     ],
     "menus": {
       "editor/context": [
         {
-          "submenu": "copyFileReference.submenu",
-          "group": "9_cutcopypaste@99"
-        }
-      ],
-      "copyFileReference.submenu": [
-        {
-          "command": "copyFileReference.withFolder",
-          "group": "1_copy"
-        },
-        {
-          "command": "copyFileReference.pathOnly",
-          "group": "1_copy"
-        },
-        {
-          "command": "copyFileReference.withRange",
+          "command": "copyFileReference.copy",
           "group": "1_copy"
         }
       ]
     },
-    "submenus": [
-      {
-        "id": "copyFileReference.submenu",
-        "label": "Copy File Reference"
-      }
-    ],
     "keybindings": [
       {
-        "key": "alt+k",
-        "command": "copyFileReference.withFolder",
-        "when": "editorTextFocus"
-      },
-      {
         "key": "alt+r",
-        "command": "copyFileReference.withRange",
-        "when": "editorTextFocus"
-      },
-      {
-        "key": "ctrl+alt+c",
-        "mac": "cmd+alt+c",
-        "command": "copyFileReference.pathOnly",
+        "command": "copyFileReference.copy",
         "when": "editorTextFocus"
       }
     ]

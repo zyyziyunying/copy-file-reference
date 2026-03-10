@@ -1,24 +1,4 @@
 import * as vscode from "vscode";
-import * as path from "path";
-
-function getWorkspaceFolder(
-  fileUri: vscode.Uri,
-): vscode.WorkspaceFolder | undefined {
-  return vscode.workspace.getWorkspaceFolder(fileUri);
-}
-
-function getRelativePath(
-  fileUri: vscode.Uri,
-  workspaceFolder: vscode.WorkspaceFolder,
-): string {
-  return path
-    .relative(workspaceFolder.uri.fsPath, fileUri.fsPath)
-    .replace(/\\/g, "/");
-}
-
-function getFolderName(workspaceFolder: vscode.WorkspaceFolder): string {
-  return path.basename(workspaceFolder.uri.fsPath);
-}
 
 function getLineInfo(editor: vscode.TextEditor): {
   start: number;
@@ -28,7 +8,6 @@ function getLineInfo(editor: vscode.TextEditor): {
   const selection = editor.selection;
   const start = selection.start.line + 1;
   const end = selection.end.line + 1;
-  // 如果选中区域的 end 在行首（character === 0），且不是同一行，则取上一行
   const adjustedEnd =
     selection.end.character === 0 && end > start ? end - 1 : end;
   return {
@@ -43,62 +22,56 @@ async function copyToClipboard(text: string) {
   vscode.window.showInformationMessage(`Copied: ${text}`);
 }
 
-function buildReference(
-  editor: vscode.TextEditor,
-  mode: "withFolder" | "pathOnly" | "withRange",
-): string | undefined {
+function normalizeAbsolutePath(fsPath: string): string {
+  const normalizedPath = fsPath.replace(/\\/g, "/");
+
+  if (/^[a-z]:\//.test(normalizedPath)) {
+    return normalizedPath[0].toUpperCase() + normalizedPath.slice(1);
+  }
+
+  return normalizedPath;
+}
+
+function buildReference(editor: vscode.TextEditor): string {
   const fileUri = editor.document.uri;
-  const workspaceFolder = getWorkspaceFolder(fileUri);
   const lineInfo = getLineInfo(editor);
   const line = lineInfo.isRange
     ? `${lineInfo.start}-${lineInfo.end}`
     : `${lineInfo.start}`;
-
-  if (!workspaceFolder) {
-    if (mode === "withRange") {
-      const fullPath = fileUri.fsPath.replace(/\\/g, "/");
-      return `${fullPath}#${line}`;
-    }
-    const fileName = path.basename(fileUri.fsPath);
-    return `${fileName}#${line}`;
-  }
-
-  const relativePath = getRelativePath(fileUri, workspaceFolder);
-  const folderName = getFolderName(workspaceFolder);
-
-  switch (mode) {
-    case "withFolder":
-    case "withRange":
-      return `@${folderName}/${relativePath}#${line}`;
-    case "pathOnly":
-      return `${relativePath}#${line}`;
-  }
+  const fullPath = normalizeAbsolutePath(fileUri.fsPath);
+  return `@${fullPath}#${line}`;
 }
 
 export function activate(context: vscode.ExtensionContext) {
-  const commands: Array<{
-    id: string;
-    mode: "withFolder" | "pathOnly" | "withRange";
-  }> = [
-    { id: "copyFileReference.withFolder", mode: "withFolder" },
-    { id: "copyFileReference.pathOnly", mode: "pathOnly" },
-    { id: "copyFileReference.withRange", mode: "withRange" },
+  const commandIds = [
+    "copyFileReference.copy",
+    "copyFileReference.withRange",
+    "copyFileReference.withFolder",
+    "copyFileReference.pathOnly",
   ];
 
-  for (const { id, mode } of commands) {
-    const disposable = vscode.commands.registerCommand(id, () => {
-      const editor = vscode.window.activeTextEditor;
-      if (!editor) {
-        vscode.window.showWarningMessage("没有打开的编辑器");
-        return;
-      }
-      const ref = buildReference(editor, mode);
-      if (ref) {
-        copyToClipboard(ref);
-      }
-    });
-    context.subscriptions.push(disposable);
-  }
+  const runCopyCommand = () => {
+    const editor = vscode.window.activeTextEditor;
+    if (!editor) {
+      vscode.window.showWarningMessage("No active editor");
+      return;
+    }
+
+    if (editor.document.uri.scheme !== "file" || !editor.document.uri.fsPath) {
+      vscode.window.showWarningMessage(
+        "Only saved local files can be copied as file references",
+      );
+      return;
+    }
+
+    copyToClipboard(buildReference(editor));
+  };
+
+  const disposables = commandIds.map((commandId) =>
+    vscode.commands.registerCommand(commandId, runCopyCommand),
+  );
+
+  context.subscriptions.push(...disposables);
 }
 
 export function deactivate() {}

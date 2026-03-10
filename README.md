@@ -1,60 +1,57 @@
 # Copy File Reference
 
-Quickly copy file path with line number to clipboard in various formats. Perfect for code reviews, documentation, and team communication.
+English | [简体中文](README.zh-CN.md)
+
+Quickly copy an `@`-prefixed absolute file path with line number to the clipboard. Perfect for code reviews, documentation, and team communication.
 
 ## Features
 
-Three copy formats available via keyboard shortcuts, command palette, or right-click context menu:
+One command is available via keyboard shortcut, command palette, or right-click context menu:
 
-| Format                   | Example                          | Shortcut     |
-| ------------------------ | -------------------------------- | ------------ |
-| `@folder/path#line`      | `@my-project/src/index.ts#42`    | `Alt+K`      |
-| `path#line`              | `src/index.ts#42`                | `Ctrl+Alt+C` |
-| `@folder/path#start-end` | `@my-project/src/index.ts#10-20` | `Alt+R`      |
+| Output | Shortcut |
+| ------ | -------- |
+| `@D:/dev/project/src/index.ts#42` | `Alt+R` |
 
-> On macOS, use `Cmd` instead of `Ctrl`.
+When multiple lines are selected, the command automatically shows the line range (for example `#10-20`).
 
-When multiple lines are selected, all formats automatically show the line range (e.g. `#10-20`).
+The extension always copies the absolute file path with a leading `@`, and normalizes Windows drive letters to uppercase.
 
 ## Usage
 
 ### Keyboard Shortcuts
 
 1. Place your cursor on a line, or select multiple lines
-2. Press the shortcut for your desired format
+2. Press `Alt+R`
 
 ### Right-Click Menu
 
 1. Right-click in the editor
-2. Select **Copy File Reference** from the context menu
-3. Choose your desired format
+2. Select **Copy File Reference**
 
 ### Command Palette
 
 1. Press `Ctrl+Shift+P` (`Cmd+Shift+P` on macOS)
-2. Type "Copy Reference"
-3. Select the format you want
+2. Type "Copy File Reference"
+3. Run the command
 
 ## Examples
 
 Single line:
 
 ```
-@my-app/src/utils/helper.ts#66
-src/utils/helper.ts#66
+@D:/dev/my-app/src/utils/helper.ts#66
 ```
 
 Multiple lines selected:
 
 ```
-@my-app/src/utils/helper.ts#60-66
-src/utils/helper.ts#60-66
+@D:/dev/my-app/src/utils/helper.ts#60-66
 ```
 
 ## Requirements
 
-- Works best inside a VS Code workspace folder.
-- For files outside a workspace, falls back to `filename.ts#line` format.
+- Supports saved local files in VS Code.
+- Unsaved editors and non-file documents are not supported.
 
 ## License
 
